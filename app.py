@@ -44,11 +44,22 @@ def chat():
 def health():
     return jsonify({'status': 'healthy'})
 
+@app.route('/', methods=['GET'])
+def root():
+    return jsonify({
+        'message': 'CMMC Compliance Chatbot API is running',
+        'endpoints': {
+            '/chat': 'POST - Send a question to the chatbot',
+            '/health': 'GET - Check API health'
+        }
+    })
+
 if __name__ == '__main__':
     # Check if vector store exists
     if not os.path.exists('./chroma_db'):
         logger.warning("ChromaDB not found. Please run embed_documents.py first.")
     
     # Get port from environment variable for Render.com compatibility
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 10000))  # Render.com expects port 10000 by default
+    logger.info(f"Starting server on port {port}")
     app.run(debug=False, host='0.0.0.0', port=port)
